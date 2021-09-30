@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.1.2/echarts.common.js"></script>
+    <script src="./db/data.js"></script>
+    <title>可视化</title>
+    <script>
+      window.onload = function () {
+        // 获取所有的币种
+        let coinNameList = Object.keys(data);
+        // 获取所有的日期
+        let timeAll = data[coinNameList[0]].map((item) => item.name);
+        // 获取内容
+        let arr = [];
+        coinNameList.forEach((item) => {
+          let obj = {
+            name: item,
+            type: "line",
+            data: [],
+          };
+          obj.data = data[item].reduce((prev, item2) => {
+             prev.push(item2.price);
+             return prev
+          }, []);
+          arr.push(obj)
+        });
+        console.log(arr)
+        var myChart = echarts.init(document.getElementById("main"));
+        myChart.setOption({
+          title: {
+            text: "Stacked Line",
+          },
+          tooltip: {
+            trigger: "axis",
+          },
+          legend: {
+            data: coinNameList,
+          },
+          grid: {
+            left: "3%",
+            right: "4%",
+            bottom: "3%",
+            containLabel: true,
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {},
+            },
+          },
+          xAxis: {
+            type: "category",
+            boundaryGap: false,
+            data: timeAll,
+          },
+          yAxis: {
+            type: "value",
+          },
+          series: arr
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <div id="main" style="width: 100%; height: 400px"></div>
+  </body>
+</html>
